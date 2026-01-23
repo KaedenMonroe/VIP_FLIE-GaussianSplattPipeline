@@ -136,10 +136,22 @@ class PipelineSection(ABC):
         except (ValueError, TypeError):
             current_val = float(default_val)
 
-        var = tk.DoubleVar(value=current_val)
+        # Use StringVar to avoid crashes on empty strings
+        var = tk.StringVar(value=f"{current_val:.2f}")
         self.widget_vars[config_key] = var
         
-        var.trace_add("write", lambda *args: self.config.update_section_config(self.name, config_key, var.get()))
+        # Safe trace callback that handles empty strings and invalid values
+        def safe_update(*args):
+            try:
+                value_str = var.get()
+                if value_str.strip():  # Not empty
+                    float_val = float(value_str)
+                    self.config.update_section_config(self.name, config_key, float_val)
+            except (ValueError, tk.TclError):
+                # Ignore invalid values during typing
+                pass
+        
+        var.trace_add("write", safe_update)
         
         # width=10 is approx half of a typical entry that expands
         sb = tk.Spinbox(frame, from_=min_val, to=max_val, increment=step,
@@ -161,10 +173,22 @@ class PipelineSection(ABC):
         except (ValueError, TypeError):
             current_val = int(default_val)
 
-        var = tk.IntVar(value=current_val)
+        # Use StringVar to avoid crashes on empty strings
+        var = tk.StringVar(value=str(current_val))
         self.widget_vars[config_key] = var
         
-        var.trace_add("write", lambda *args: self.config.update_section_config(self.name, config_key, var.get()))
+        # Safe trace callback that handles empty strings and invalid values
+        def safe_update(*args):
+            try:
+                value_str = var.get()
+                if value_str.strip():  # Not empty
+                    int_val = int(float(value_str))
+                    self.config.update_section_config(self.name, config_key, int_val)
+            except (ValueError, tk.TclError):
+                # Ignore invalid values during typing
+                pass
+        
+        var.trace_add("write", safe_update)
         
         sb = tk.Spinbox(frame, from_=min_val, to=max_val, increment=step,
                         textvariable=var, width=10)
