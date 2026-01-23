@@ -9,7 +9,7 @@ import time
 import argparse
 
 class FrameDeduplicator:
-    def __init__(self, source_dir, output_dir=None, threshold=0.92, resize_width=512, dry_run=False):
+    def __init__(self, source_dir, output_dir=None, threshold=0.92, resize_width=512, dry_run=False, max_workers=2):
         """
         Initialize the Deduplicator.
         
@@ -22,12 +22,15 @@ class FrameDeduplicator:
                                < Threshold implies new content (keep/pivot).
             resize_width (int): Width to resize images to for comparison (optimization).
             dry_run (bool): If True, simulate actions without moving files.
+            max_workers (int): Maximum number of worker processes. Default is 2 to avoid 
+                              memory issues on Windows. Set to None to use all CPU cores.
         """
         self.source_dir = source_dir
         self.output_dir = output_dir
         self.threshold = threshold
         self.resize_width = resize_width
         self.dry_run = dry_run
+        self.max_workers = max_workers
 
     def _find_image_directories(self):
         """
@@ -135,14 +138,14 @@ class FrameDeduplicator:
             total_files += n_files
             
             # Parallel Execution
-            cpu_count = multiprocessing.cpu_count()
-            chunk_size = int(np.ceil(n_files / cpu_count))
+            num_workers = self.max_workers if self.max_workers is not None else multiprocessing.cpu_count()
+            chunk_size = int(np.ceil(n_files / num_workers))
             # Ensure at least 1 chunk
             if chunk_size < 1: chunk_size = 1
             
             chunks = [all_files[i:i + chunk_size] for i in range(0, n_files, chunk_size)]
             
-            with multiprocessing.Pool(processes=cpu_count) as pool:
+            with multiprocessing.Pool(processes=num_workers) as pool:
                 results = pool.map(self._process_chunk_wrapper, chunks)
                 
             dir_duplicates = [item for sublist in results for item in sublist]
@@ -193,14 +196,19 @@ if __name__ == "__main__":
     parser.add_argument("--threshold", type=float, default=0.92, help="SSIM Threshold (default 0.92)")
     parser.add_argument("--resize_width", type=int, default=512, help="Width to resize images for comparison")
     parser.add_argument("--dry_run", action="store_true", help="Run without changes")
+    parser.add_argument("--max_workers", type=int, default=2, help="Max worker processes (default 2, use -1 for all CPUs)")
     
     args = parser.parse_args()
+    
+    # Handle -1 as "use all CPUs"
+    max_workers = None if args.max_workers == -1 else args.max_workers
     
     deduplicator = FrameDeduplicator(
         source_dir=args.input_dir,
         output_dir=args.output_dir,
         threshold=args.threshold,
         resize_width=args.resize_width,
-        dry_run=args.dry_run
+        dry_run=args.dry_run,
+        max_workers=max_workers
     )
     deduplicator.run()

@@ -111,8 +111,17 @@ class DeduplicateCommandBuilder:
         if str(dr).lower() in ("true", "1", "yes"):
              cmd.append("--dry_run")
              
-        # Note: 'resolution' is in the GUI but not exposed in scripts/deduplicate.py CLI arguments yet.
-        # We will need to update scripts/deduplicate.py to accept it if we want to support it.
+        # Max Workers (default to 2 for Windows compatibility)
+        if "max_workers" in config:
+            try:
+                mw = int(config["max_workers"])
+                if mw > 0:
+                    cmd.extend(["--max_workers", str(mw)])
+            except (ValueError, TypeError):
+                pass
+        else:
+            # Default to 2 workers to avoid paging file issues on Windows
+            cmd.extend(["--max_workers", "2"])
 
         return cmd
 

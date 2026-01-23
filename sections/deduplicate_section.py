@@ -14,11 +14,12 @@ class DeduplicateSection(PipelineSection):
         
     def render_options(self, parent: tk.Frame):
         # Section title or description
-        tk.Label(parent, text="This is a dummy section for verification.", fg="gray").pack(pady=5)
+        tk.Label(parent, text="Remove duplicate frames using SSIM comparison.", fg="gray").pack(pady=5)
         
         # Add some configurable inputs
-        self._add_float_spinbox(parent, "Target Count (0=Auto):", "threshold", 0.00, 1.00, 0.01, 0.92)
-        self._add_dropdown(parent, "What Resolution to Scale to (512=Auto)", "resolution", [256,512,1024], default_val=512, width=10)
+        self._add_float_spinbox(parent, "SSIM Threshold (0.92=Default):", "threshold", 0.00, 1.00, 0.01, 0.92)
+        self._add_dropdown(parent, "Resolution to Scale to (512=Default)", "resolution", [256,512,1024], default_val=512, width=10)
+        self._add_int_spinbox(parent, "Max Workers (2=Safe for Windows):", "max_workers", 1, 16, 1, 2)
         self._add_checkbox(parent, "Dry Run (Simulate)", "dry_run", default_val=False)
 
     def build_command(self) -> List[str]:
