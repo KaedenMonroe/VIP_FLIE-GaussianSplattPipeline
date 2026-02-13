@@ -55,18 +55,52 @@ class PipelineManager:
                             self.staged_sections.remove(s)
                 
                 self.staged_sections.append(section)
+            while self._validate_order() == False:
+                last_index = -1
+                for index, section in enumerate(self.staged_sections):
+                    cat = self._find_category_for_section(section)
+                    if cat:
+                        if cat.stage_index < last_index:
+                            self.move_staged_item(index, -1)
+                        last_index = cat.stage_index
         else:
             if section in self.staged_sections:
                 self.staged_sections.remove(section)
                 
         self._notify_staging_changed()
 
+    def _validate_movement(self, index:int, direction:int) -> bool:
+        """
+        Used to enforce the ordering of the Pipeline when maually 
+        reordering the options (aka you can't move an option from 
+        category 1 to after category 2)
+        
+        Args:
+            index(int): the index of the section attempting to be moved
+            direction(int): the direction the section is attempting to move
+            
+        Return:
+            bool: whether or not the movement is valid
+        """
+        new_index = direction + index
+        section = self.staged_sections[index]
+        compared_section = self.staged_sections[new_index]
+        cat = self._find_category_for_section(section)
+        compared_cat = self._find_category_for_section(compared_section)
+        
+        if cat == compared_cat:
+            return True
+        
+        return False
+
     def move_staged_item(self, index: int, direction: int) -> bool:
         """
         Moves item at `index` up (-1) or down (+1).
         Returns True if moved.
         """
+        
         new_index = index + direction
+              
         if 0 <= new_index < len(self.staged_sections):
             self.staged_sections[index], self.staged_sections[new_index] = \
                 self.staged_sections[new_index], self.staged_sections[index]

@@ -38,11 +38,15 @@ class LibraryWidget(tk.Frame):
         
         self.toggle_vars = {} # Map section.name -> tk.BooleanVar
 
+        category_count = 1
+        
         for category in self.manager.categories:
+            category_text = str(category_count) + ". " + category.name
+            category_count += 1
             # Header
             cat_frame = tk.Frame(self.scrollable_frame, bg='darkgray', pady=2)
             cat_frame.pack(fill='x', pady=2)
-            tk.Label(cat_frame, text=category.name, bg='darkgray', font=('Helvetica', 10, 'bold')).pack(anchor='w', padx=5)
+            tk.Label(cat_frame, text=category_text, bg='darkgray', font=('Helvetica', 10, 'bold')).pack(anchor='w', padx=5)
             
             # Items
             for section in category.sections:

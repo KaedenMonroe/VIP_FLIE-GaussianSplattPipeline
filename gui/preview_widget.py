@@ -55,14 +55,16 @@ class PreviewWidget(tk.Frame):
         sel = self.listbox.curselection()
         if sel:
             idx = sel[0]
-            if self.manager.move_staged_item(idx, -1):
-                self.listbox.selection_clear(0, tk.END)
-                self.listbox.selection_set(idx - 1)
+            if self.manager._validate_movement( idx, -1):
+                if self.manager.move_staged_item(idx, -1):
+                    self.listbox.selection_clear(0, tk.END)
+                    self.listbox.selection_set(idx - 1)
 
     def _move_down(self):
         sel = self.listbox.curselection()
         if sel:
             idx = sel[0]
-            if self.manager.move_staged_item(idx, 1):
-                self.listbox.selection_clear(0, tk.END)
-                self.listbox.selection_set(idx + 1)
+            if self.manager._validate_movement( idx, 1):
+                if self.manager.move_staged_item(idx, 1):
+                    self.listbox.selection_clear(0, tk.END)
+                    self.listbox.selection_set(idx + 1)
