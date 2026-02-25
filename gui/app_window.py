@@ -23,6 +23,8 @@ class AppWindow(tk.Tk):
         self.manager = manager
         self.executor = executor
         self.output_queue = output_queue
+        self.window_manager_open = False
+        self.win = None
         
         # Event wiring
         self.manager.add_staging_listener(self._on_global_staging_change)
@@ -85,8 +87,18 @@ class AppWindow(tk.Tk):
         section.on_show()
 
     def _open_path_selection(self):
-        win = PathSelectionWindow(self, self.manager.config)
-        win.set_callback(self.preview_widget.refresh)
+        if self.window_manager_open:
+            self.win.lift()
+        else:
+            self.window_manager_open = True
+            self.win = PathSelectionWindow(self, self.manager.config)
+            self.win.set_callback(self.preview_widget.refresh)
+            self.win.protocol("WM_DELETE_WINDOW", self._on_path_selection_closing)
         # Optional: Make it modal
         # win.transient(self)
         # win.grab_set()
+    
+    def _on_path_selection_closing(self):
+        self.window_manager_open = False
+        self.win.destroy()
+        self.win = None
