@@ -1,6 +1,6 @@
 import tkinter as tk
 from core.pipeline_manager import PipelineManager
-
+from .style import bgColor, sectionBorderColor, toolbarColor, normalTextColor
 class PreviewWidget(tk.Frame):
     """
     Right Sidebar.
@@ -10,26 +10,28 @@ class PreviewWidget(tk.Frame):
     def __init__(self, parent, manager: PipelineManager):
         super().__init__(parent)
         self.manager = manager
-        
+        self.configure(background=bgColor, highlightbackground=sectionBorderColor, bd=1)
         self._setup_ui()
 
     def _setup_ui(self):
-        tk.Label(self, text="Pipeline Preview", font=("Helvetica", 12, "bold")).pack(pady=5)
+        tk.Label(self, text="Pipeline Preview", font=("Helvetica", 12, "bold"), foreground=normalTextColor, bg=bgColor).pack(pady=5)
         
-        self.listbox = tk.Listbox(self, bg="#f0f0f0", selectmode=tk.SINGLE)
+        self.listbox = tk.Listbox(self, bg=toolbarColor, foreground=normalTextColor, selectmode=tk.SINGLE, relief="flat")
         self.listbox.pack(side="top", fill="both", expand=True, padx=5)
         
-        btn_frame = tk.Frame(self)
+        btn_frame = tk.Frame(self, background=bgColor, bd=1)
         btn_frame.pack(fill='x', pady=5)
         
-        tk.Button(btn_frame, text="▲", command=self._move_up).pack(side='left', padx=5, expand=True)
-        tk.Button(btn_frame, text="▼", command=self._move_down).pack(side='left', padx=5, expand=True)
+        tk.Button(btn_frame, text="▲", command=self._move_up, background=bgColor, fg=normalTextColor, 
+                relief="flat").pack(side='left', padx=5, expand=True)
+        tk.Button(btn_frame, text="▼", command=self._move_down, background=bgColor, fg=normalTextColor,
+                relief="flat").pack(side='left', padx=5, expand=True)
         
-        self.warning_lbl = tk.Label(self, text="", fg="red", wraplength=180)
+        self.warning_lbl = tk.Label(self, text="", fg="red", wraplength=180, background=bgColor)
         self.warning_lbl.pack(pady=5)
 
         # Bottom Status
-        self.path_status_lbl = tk.Label(self, text="Paths Missing", fg="red", font=("Helvetica", 10))
+        self.path_status_lbl = tk.Label(self, text="Paths Missing", fg="red", font=("Helvetica", 10), background=bgColor)
         self.path_status_lbl.pack(side='bottom', pady=10)
 
     def refresh(self):

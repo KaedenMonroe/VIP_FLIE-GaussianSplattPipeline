@@ -1,5 +1,6 @@
 import tkinter as tk
 from sections.base_section import PipelineSection
+from .style import bgColor
 
 class SectionFrame(tk.Frame):
     """
@@ -9,6 +10,7 @@ class SectionFrame(tk.Frame):
     def __init__(self, parent: tk.Widget, section: PipelineSection):
         super().__init__(parent)
         self.section = section
+        self.config(background=bgColor)
         
         # Title of the section (optional visual header)
         header = tk.Label(self, text=f"Configure: {section.name}", font=("Helvetica", 14, "bold"))

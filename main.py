@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import ttk
 import queue
 import sys
 import os
@@ -11,13 +12,14 @@ from core.executor import AsyncExecutor
 from core.pipeline_manager import PipelineManager
 from core.category import PipelineCategory, SelectionMode
 from gui.app_window import AppWindow
+from gui.style import bgColor
 
-# Sections
 # Sections
 from sections.example_section import ExampleSection
 from sections.blur_section import BlurSection
 from sections.extract_frames_section import ExtractFramesSection
 from sections.deduplicate_section import DeduplicateSection
+from sections.metashape_section import MetashapeSection
 
 def main():
     output_queue = queue.Queue()
@@ -38,6 +40,7 @@ def main():
     cat_sfm = PipelineCategory("Structure from Motion", SelectionMode.SINGLE, stage_index=2)
     cat_sfm.add_section(ExampleSection("COLMAP", config))
     cat_sfm.add_section(ExampleSection("GLOMAP (Global)", config))
+    cat_sfm.add_section(MetashapeSection("Metashape (Colmap Output)", config))
     manager.add_category(cat_sfm)
     
     # 3. Training
@@ -47,7 +50,7 @@ def main():
     
     # --- Launch ---
     app = AppWindow(manager, executor, output_queue)
-    
+    app.configure(bg=bgColor)
     def on_close():
         executor.stop()
         app.destroy()

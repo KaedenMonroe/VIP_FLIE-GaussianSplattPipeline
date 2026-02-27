@@ -121,17 +121,19 @@ class PipelineManager:
     def run_sequence(self):
         """Runs the STAGED steps."""
         if not self.staged_sections:
-             self.executor.output_queue.put("[Manager]: No steps staged!\n")
+             self.executor.output_queue.put("[Manager Error]: No steps staged!\n")
              return
 
         # V2: Run-time validation
         if not self._validate_order():
-             self.executor.output_queue.put("[Manager]: WARNING: Pipeline appears out of order. Running anyway...\n")
-             # In a real app, you might show a Popup here and ask to Continue/Cancel.
+             self.executor.output_queue.put("[Manager WARNING]: Pipeline appears out of order. Running anyway...\n")
+             # TODO: Show a Popup here and ask to Continue/Cancel.
              # For now, we log it and proceed.
+             # May now be a redundant feature to add with pipeline restrictions 
+             # but maybe add later as a fail safe?
 
         if not self._validate_pipeline_environment():
-            self.executor.output_queue.put("[Manager]: Dataset Validation Failed. Aborting.\n")
+            self.executor.output_queue.put("[Manager Error]: Dataset Validation Failed. Aborting\n")
             return
 
         self.current_step_index = 0
@@ -238,7 +240,7 @@ class PipelineManager:
             self._run_next_in_sequence()
         else:
             self._notify_status(self.current_step_index, "Failed")
-            self.executor.output_queue.put("[Manager]: Aborted.\n")
+            self.executor.output_queue.put("[Manager Error]: Aborted due to failed step\n")
             self.is_sequence_running = False
 
     def _notify_status(self, index: int, status: str):

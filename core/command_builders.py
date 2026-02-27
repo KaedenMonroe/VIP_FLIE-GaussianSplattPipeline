@@ -154,3 +154,9 @@ class ExtractFramesCommandBuilder:
              cmd.append("--dry_run")
 
         return cmd
+
+class MetashapeCommandBuilder:
+    @staticmethod
+    def build(config: Dict[str, Any]) -> List[str]:
+        
+        return cmd
