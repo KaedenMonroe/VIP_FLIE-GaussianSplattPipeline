@@ -49,7 +49,7 @@ class PreviewWidget(tk.Frame):
         # Update Path Status
         ctx = self.manager.config.global_context
         if ctx.input_dir and ctx.output_dir:
-            self.path_status_lbl.config(text="Paths Configured", fg="green")
+            self.path_status_lbl.config(text="Paths Configured", fg="lime")
         else:
             self.path_status_lbl.config(text="Paths Missing", fg="red")
             

@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import scrolledtext
 import queue
-from .style import consoleColor, toolbarColor, normalTextColor, consoleScrollcolor
+from .style import consoleColor, toolbarColor, normalTextColor, consoleScrollcolor, consoleError, consoleNormal, consoleWarning
 
 class ConsoleWidget(tk.Frame):
     """
@@ -20,7 +20,10 @@ class ConsoleWidget(tk.Frame):
                                                    background=consoleColor, foreground=normalTextColor)
         #TODO: Fix scrollbar coloring
         #self.text_area.vbar.configure(troughcolor=consoleScrollcolor)
-        self.text_area.tag_config("Manager Error", foreground="red")
+        self.text_area.tag_config("Manager Error", foreground=consoleError)
+        self.text_area.tag_config("Manager Warning", foreground=consoleWarning)
+        self.text_area.tag_config("Manager", foreground=consoleNormal)
+
         self.text_area.pack(fill='both', expand=True)
         
         # Start Polling
@@ -32,7 +35,7 @@ class ConsoleWidget(tk.Frame):
             while True:
                 # Get all available messages (non-blocking)
                 text = self.output_queue.get_nowait()
-                self._append_text(text)
+                self._append_text(text, self.text_area)
                 self.output_queue.task_done()
         except queue.Empty:
             pass
@@ -40,20 +43,39 @@ class ConsoleWidget(tk.Frame):
             # Reschedule poll
             self.after(self.poll_interval_ms, self._poll_queue)
 
-    def _append_text(self, text: str):
+    def _append_text(self, text: str, text_area):
+        text_area.config(state='normal')
+        text_split = text.splitlines(keepends=False)
+        # print(text_area)
+        for line in text_split:
+            if line:
+                text_area.insert(tk.END, line +"\n")
+                if '[Manager Error]:' in line:
+                    index = line.find('[Manager Error]:')
+                    text_area.tag_add("Manager Error", 
+                                        str(self.current_text_column)+'.'+str(index),
+                                        str(self.current_text_column)+'.'+str(index+16))
+                if '[Manager WARNING]:' in text:
+                    index = text.find('[Manager WARNING]:')
+                    self.text_area.tag_add("Manager Warning", 
+                                           float(str(self.current_text_column)+'.'+str(index)),
+                                           float(str(self.current_text_column)+'.'+str(index+18)))
+                if '[Manager]:' in line:
+                    index = line.find('[Manager]:')
+                    self.text_area.tag_add("Manager", 
+                                           str(self.current_text_column)+'.'+ str(index),
+                                           str(self.current_text_column)+'.'+ str(index+10))
+                if '[System]:' in line:
+                    index = line.find('[System]:')
+                    self.text_area.tag_add("Manager", 
+                                           str(self.current_text_column)+'.'+ str(index),
+                                           str(self.current_text_column)+'.'+ str(index+9))
+                self.current_text_column += 1
         
             
-        self.text_area.config(state='normal')
-        self.text_area.insert(tk.END, text)
-        self.text_area.see(tk.END) # Auto-scroll
-        self.text_area.config(state='disabled')
-        if '[Manager Error]:' in text:
-            self.text_area.tag_add("Manager Error", 
-                                   float(str(self.current_text_column)+'.0'),
-                                   float(str(self.current_text_column)+'.16'))
-        elif '[Manager WARNING]:' in text:
-            self.text_area.tag_add("Manager Warning", 
-                                   float(str(self.current_text_column)+'.0'),
-                                   float(str(self.current_text_column)+'.18'))
         
-        self.current_text_column += 1
+        self.text_area.see(tk.END) # Auto-scroll
+        
+        self.text_area.config(state='disabled')
+       
+    

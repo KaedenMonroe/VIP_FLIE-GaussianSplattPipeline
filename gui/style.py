@@ -12,6 +12,9 @@ normalTextColor = '#EEEEEE'
 sectionBorderColor = '#3DAFE0'
 consoleColor = '#2F3237'
 consoleScrollcolor = '#383C42'
+consoleError = 'red'
+consoleWarning = 'yellow'
+consoleNormal = 'lime'
 debug = '#39FF14'
 
 class Stylemanager():
