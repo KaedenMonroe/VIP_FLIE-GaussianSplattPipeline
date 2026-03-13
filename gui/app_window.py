@@ -6,7 +6,7 @@ import tkinter as tk
 import queue
 import os
 from PIL import Image, ImageTk
-from .style import Stylemanager, bgColor
+from .style import bgColor, normalTextColor, toolbarColor
 from core.pipeline_manager import PipelineManager
 from core.executor import AsyncExecutor
 from .console_widget import ConsoleWidget
@@ -37,8 +37,6 @@ class AppWindow(tk.Tk):
         self.output_queue = output_queue
         self.window_manager_open = False
         self.win = None
-        self.stylemanager = Stylemanager()
-        self.stylemanager.styleMain(self)
         self.configure(background=bgColor)
         # Event wiring
         self.manager.add_staging_listener(self._on_global_staging_change)
@@ -56,9 +54,9 @@ class AppWindow(tk.Tk):
         Sets up the main GUI after the main window is created
         """
         # Toolbar
-        toolbar = tk.Frame(self, bd=0)
+        toolbar = tk.Frame(self, bd=0, background=toolbarColor)
         toolbar.pack(side='top', fill='x', padx=0, pady=0)
-        self.stylemanager.styleToolbar(toolbar)
+        
         
         
         # NOTE: Removed 'bg' kwarg which causes empty buttons on Mac
@@ -66,18 +64,18 @@ class AppWindow(tk.Tk):
         runButton.pack(side='left', padx=(10,0), pady=5, ipadx=1, ipady=1)
         estopButton = tk.Button(toolbar, text="E-Stop", command=lambda: self.manager.stop_sequence(), bd=0)
         estopButton.pack(side='left', padx=(10,0), pady=5, ipadx=1, ipady=1)
-        self.stylemanager.styleButton(estopButton)
-        self.stylemanager.styleButton(runButton)
+        estopButton.configure(background=toolbarColor, foreground=normalTextColor, font=("Consolas", 10))
+        runButton.configure(background=toolbarColor, foreground=normalTextColor, font=("Consolas", 10))
         
         pathsbutton = tk.Button(toolbar, text="Set-Paths", command=self._open_path_selection, bd=0)
         pathsbutton.pack(side='left', padx=(10,0), pady=5, ipadx=1, ipady=1)
-        self.stylemanager.styleButton(pathsbutton)
+        pathsbutton.configure(background=toolbarColor, foreground=normalTextColor, font=("Consolas", 10))
         
 
         # Main Paned Window (Horizontal split: Left, Middle, Right)
-        main_pane = tk.PanedWindow(self, orient=tk.HORIZONTAL)
-        main_pane.pack(fill='both', expand=True, padx=5, pady=5)
-        main_pane.configure(background=bgColor, relief="flat", sashrelief='raised')
+        main_pane = tk.PanedWindow(self, orient=tk.HORIZONTAL, opaqueresize=False, bd=0)
+        main_pane.pack(fill='both', expand=True, padx=0, pady=0)
+        main_pane.configure(background=normalTextColor, relief="flat", sashrelief='raised')
 
         # 1. Left: Library
         self.library_widget = LibraryWidget(main_pane, self.manager, on_view_section=self._show_section_options)
@@ -86,7 +84,7 @@ class AppWindow(tk.Tk):
         
         
         # 2. Middle: Options
-        self.options_container = tk.Frame(main_pane, bg=bgColor)
+        self.options_container = tk.Frame(main_pane, background=bgColor)
         main_pane.add(self.options_container, minsize=400)
 
         # 3. Right: Preview
@@ -109,9 +107,6 @@ class AppWindow(tk.Tk):
         
         # Render
         frame = SectionFrame(self.options_container, section)
-        frame.pack(fill='both', expand=True, padx=20, pady=20)
-        section.on_show()
-
         frame.pack(fill='both', expand=True, padx=20, pady=20)
         section.on_show()
 

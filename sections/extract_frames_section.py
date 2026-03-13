@@ -14,7 +14,7 @@ class ExtractFramesSection(PipelineSection):
         
     def render_options(self, parent: tk.Frame):
         # Section title or description
-        tk.Label(parent, text="Extract frames from video files.", fg="gray").pack(pady=5)
+        self._add_subtitle(parent, text="Extract frames from video files.")
         
         # Add some configurable inputs
         self._add_dropdown(parent, "Output Format", "format", ["jpg", "png"], default_val="jpg")

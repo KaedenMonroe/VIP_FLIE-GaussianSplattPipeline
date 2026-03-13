@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import scrolledtext
 import queue
-from .style import consoleColor, toolbarColor, normalTextColor, consoleScrollcolor, consoleError, consoleNormal, consoleWarning
+from .style import consoleColor, toolbarColor, normalTextColor, consoleError, consoleNormal, consoleWarning
 
 class ConsoleWidget(tk.Frame):
     """

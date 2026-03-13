@@ -13,7 +13,7 @@ class ExampleSection(PipelineSection):
         
     def render_options(self, parent: tk.Frame):
         # Section title or description
-        tk.Label(parent, text="This is a dummy section for verification.", fg="gray").pack(pady=5)
+        self._add_subtitle(parent, text="This is a dummy section for verification.")
         
         # Add some configurable inputs
         self._add_entry(parent, "Sleep Duration (s):", "duration", default_val="2")

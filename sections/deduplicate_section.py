@@ -14,7 +14,7 @@ class DeduplicateSection(PipelineSection):
         
     def render_options(self, parent: tk.Frame):
         # Section title or description
-        tk.Label(parent, text="This is a dummy section for verification.", fg="gray").pack(pady=5)
+        self._add_subtitle(parent, text="This is a dummy section for verification.")
         
         # Add some configurable inputs
         self._add_float_spinbox(parent, "Target Count (0=Auto):", "threshold", 0.00, 1.00, 0.01, 0.92)

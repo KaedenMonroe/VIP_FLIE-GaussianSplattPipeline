@@ -15,16 +15,16 @@ class LibraryWidget(tk.Frame):
         super().__init__(parent)
         self.manager = manager
         self.on_view_section = on_view_section # Callback when user clicks name to view options
-        self.configure(border=0, width=200, bg=bgColor)
+        self.configure(border=0, width=200, background=bgColor)
         self._setup_ui()
         # Listen for updates
         self.manager.add_staging_listener(self._refresh_toggles)
 
     def _setup_ui(self):
         # We use a Canvas+Frame to allow scrolling if list is long
-        canvas = tk.Canvas(self, bg=bgColor, highlightthickness=0)
+        canvas = tk.Canvas(self, background=bgColor, highlightthickness=0)
         
-        self.scrollable_frame = tk.Frame(canvas, bg=bgColor)
+        self.scrollable_frame = tk.Frame(canvas, background=bgColor)
         
         self.scrollable_frame.bind(
             "<Configure>",
@@ -50,16 +50,16 @@ class LibraryWidget(tk.Frame):
             category_text = str(category_count) + ". " + category.name
             category_count += 1
             # Header
-            cat_frame = tk.Frame(self.scrollable_frame, bg='darkgray', pady=2, width=100)
+            cat_frame = tk.Frame(self.scrollable_frame, background='darkgray', pady=2, width=100)
             cat_frame.pack(fill='x', pady=2)
-            tk.Label(cat_frame, text=category_text, bg='darkgray', font=('Helvetica', 10, 'bold')).pack(anchor='w', ipadx=5, padx=0)
+            tk.Label(cat_frame, text=category_text, background='darkgray', font=('Helvetica', 10, 'bold')).pack(anchor='w', ipadx=5, padx=0)
             
             # Items
             for section in category.sections:
                 """
                 Sets up the individual options in each category
                 """
-                row = tk.Frame(self.scrollable_frame, bg=bgColor)
+                row = tk.Frame(self.scrollable_frame, background=bgColor)
                 row.pack(anchor='w', padx=(10,0), pady=1)
                 
                 # Checkbox for Staging
@@ -69,11 +69,11 @@ class LibraryWidget(tk.Frame):
                 # We need to capture 'section' in lambda properly
                 cmd = lambda s=section, v=var: self._on_toggle(s, v)
                 
-                chk = tk.Checkbutton(row, variable=var, command=cmd, bg=bgColor, highlightthickness=0)
+                chk = tk.Checkbutton(row, variable=var, command=cmd, background=bgColor, highlightthickness=0, foreground=normalTextColor,activebackground=bgColor, activeforeground=normalTextColor, selectcolor=bgColor)
                 chk.pack(side='left')
                 
                 # Clickable Label for Viewing
-                lbl = tk.Label(row, text=section.name, bg=bgColor, foreground=normalTextColor, cursor="hand2")
+                lbl = tk.Label(row, text=section.name, background=bgColor, foreground=normalTextColor, cursor="hand2")
                 lbl.pack(side='left', fill='x', expand=True, anchor='w')
                 lbl.bind("<Button-1>", lambda e, s=section: self.on_view_section(s))
         
