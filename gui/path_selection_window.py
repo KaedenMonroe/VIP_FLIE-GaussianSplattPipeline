@@ -1,3 +1,4 @@
+#TODO: Fix bug where path selection window soft locks if closed before the file dialog is closed
 import tkinter as tk
 from tkinter import filedialog, ttk
 import os

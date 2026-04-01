@@ -29,23 +29,32 @@ def main():
     
     # --- Define Categories & Sections ---
     
-    # 1. Preprocessing (Multi-Select allowed)
-    cat_prep = PipelineCategory("Preprocessing", SelectionMode.MULTI, stage_index=1)
-    cat_prep.add_section(ExtractFramesSection("Frame Extraction", config))
+    # 1. Frame Extraction
+    cat_extrct = PipelineCategory("Frame Extraction", SelectionMode.SINGLE, stage_index=1)
+    cat_extrct.add_section(ExtractFramesSection("Frame Extraction", config))
+    manager.add_category(cat_extrct)
+    
+    # 2. Preprocessing (Multi-Select allowed)
+    cat_prep = PipelineCategory("Preprocessing", SelectionMode.MULTI, stage_index=2)
     cat_prep.add_section(BlurSection("Blur Filter", config))
-    cat_prep.add_section(DeduplicateSection("Deduplicate Frames", config))
+    #TODO: Ensure this is prperly implemented and test this
+    #cat_prep.add_section(DeduplicateSection("Deduplicate Frames", config))
     manager.add_category(cat_prep)
     
-    # 2. SfM (Single Select implied)
-    cat_sfm = PipelineCategory("Structure from Motion", SelectionMode.SINGLE, stage_index=2)
-    cat_sfm.add_section(ExampleSection("COLMAP", config))
-    cat_sfm.add_section(ExampleSection("GLOMAP (Global)", config))
+    # 3. SfM (Single Select implied)
+    cat_sfm = PipelineCategory("Structure from Motion", SelectionMode.SINGLE, stage_index=3)
+    #TODO: ImplementTest Colmap
+    #cat_sfm.add_section(ExampleSection("COLMAP", config))
+    #TODO: ImplementTest Glomap
+    #cat_sfm.add_section(ExampleSection("GLOMAP (Global)", config))
+    #TODO: Finish Implementint and Test Metashape option 
     cat_sfm.add_section(MetashapeSection("Metashape (Colmap Output)", config))
     manager.add_category(cat_sfm)
     
-    # 3. Training
-    cat_train = PipelineCategory("Training", SelectionMode.SINGLE, stage_index=3)
-    cat_train.add_section(ExampleSection("Standard 3DGS", config))
+    # 4. Training
+    cat_train = PipelineCategory("Training", SelectionMode.SINGLE, stage_index=4)
+    #TODO: Implement Brush Support
+    #cat_train.add_section(ExampleSection("Standard 3DGS", config))
     manager.add_category(cat_train)
     
     # --- Launch ---

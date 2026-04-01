@@ -103,7 +103,7 @@ class PipelineSection(ABC):
         frame = tk.Frame(parent, bg=bgColor)
         frame.pack(fill='x', pady=2)
         
-        lbl = tk.Label(frame, text=label_text, width=20, anchor='w', bg=bgColor, fg=normalTextColor)
+        lbl = tk.Label(frame, text=label_text, anchor='w', bg=bgColor, fg=normalTextColor)
         lbl.pack(side='left', padx=5)
         
         current_val = self.config.get_section_config(self.name).get(config_key, default_val)
@@ -130,8 +130,6 @@ class PipelineSection(ABC):
         frame = tk.Frame(parent, background=bgColor)
         frame.pack(fill='x', pady=2)
         
-        #TODO: Remove redundant commented code
-        # lbl = tk.Label(frame, text=label_text, width=20, anchor='e')
         lbl = tk.Label(frame, text=label_text, anchor='w', bg=bgColor, fg=normalTextColor)
         lbl.pack(side='left', padx=5)
         
@@ -220,3 +218,20 @@ class PipelineSection(ABC):
                         textvariable=var, bg=bgColor,
                         fg=normalTextColor, buttonbackground=bgColor)
         sb.pack(side='right', padx=5)
+
+
+    def _add_folder_selector(self, parent: tk.Frame, label_text: str, config_key: str): 
+        """
+        Helper to create a file selector box.
+        Example:
+                            ┌────────────┐
+        Important file        │ Select file │
+                            └────────────┘  
+        """
+        
+        frame = tk.Frame(parent, bg=bgColor)
+        frame.pack(fill='x', pady=2)
+        
+        lbl = tk.Label(frame, text=label_text, anchor='w', bg=bgColor, fg=normalTextColor)
+        lbl.pack(side='left', padx=5)
+        

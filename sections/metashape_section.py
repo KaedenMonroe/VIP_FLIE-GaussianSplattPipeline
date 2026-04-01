@@ -12,23 +12,19 @@ class MetashapeSection(PipelineSection):
         
     def render_options(self, parent: tk.Frame):
         # Passes options for 
-        self._add_entry(parent, "File Name:", "name")
-        self._add_entry(parent, "Metashape File Directory", "metashape_dir")
+        self._add_entry(parent, "Metashape File Name:", "name")
+        self._add_checkbox(parent, "Save Metashape file in a seperate Directory?", "separateDirFlag", default_val=False)
+        self._add_folder_selector(parent, "Select Seperate Metashape File Directory (optional):", "metashape_output")
         #TODO: Add more options and incorporate them into the metashape execution file
         
 
     def build_command(self) -> List[str]:
-        #TODO: make sure neccesary script inputs are avalible: 
-        #   Added: name, metashape_directory
-        #   Needed: export_path, import path(photos)
-        cfg = self.config.get_section_config(self.name)
-        filename = cfg.get("name", "metashapefile")
-        metashape_dir = cfg.get("message", "Hello")
-     
-        return [sys.executable, "-c", code]
+             
+        from core.command_builders import MetashapeCommandBuilder
+        return MetashapeCommandBuilder.build(self.config.get_section_config(self.name))
     
     def validate(self) -> bool:
-        # Example validation
+        #TODO: create validation
         cfg = self.config.get_section_config(self.name)
         try:
             d = float(cfg.get("duration", 0))

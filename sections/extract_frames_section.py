@@ -17,7 +17,7 @@ class ExtractFramesSection(PipelineSection):
         self._add_subtitle(parent, text="Extract frames from video files.")
         
         # Add some configurable inputs
-        self._add_dropdown(parent, "Output Format", "format", ["jpg", "png"], default_val="jpg")
+        self._add_dropdown(parent, "Output Format", "format", ["png", "jpg"], default_val="png")
         self._add_int_spinbox(parent, "Extract Every Nth Frame", "every_n", 1, 1000, 1, 1)
         self._add_checkbox(parent, "Dry Run (Simulate)", "dry_run", default_val=False)
 

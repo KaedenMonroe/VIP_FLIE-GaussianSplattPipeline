@@ -158,5 +158,29 @@ class ExtractFramesCommandBuilder:
 class MetashapeCommandBuilder:
     @staticmethod
     def build(config: Dict[str, Any]) -> List[str]:
+        """
+        Builds the command line arguments for the Metashape script.
+        """
+        base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        # base_dir is project root
+        script_path = os.path.join(base_dir, "scripts", "metashape_executor_script.py")
+        
+        cmd = [sys.executable, script_path]
+        
+        # Mandatory Arguments (configs not defined in section)
+        if "input_dir" in config:
+            cmd.extend(["--input", str(config["input_dir"])])
+            
+        if "output_dir" in config:
+            cmd.extend(["--output", str(config["output_dir"])])
+        
+        # Mandatory Arguments (Configs defined in Metashape section)
+        if "name" in config:
+            cmd.extend(["--name", str(config["name"])])
+        
+        if ("metashape_output" in config) and ("separateDirFlag" in config):
+            cmd.extend({"--metashape_output", str(config["metashape_output"])})        
+        else:
+            cmd.extend({"--metashape_output", str(config["output_dir"])})
         
         return cmd
