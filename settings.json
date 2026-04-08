@@ -1,0 +1,13 @@
+{
+    "version": "0.1.0",
+    "settings": {
+        "brush": {
+            "enabled": true,
+            "path": "C:/Users/bjtra/Downloads/brush-app-x86_64-pc-windows-msvc/brush_app.exe"
+        },
+        "metashape": {
+            "enabled": false,
+            "path": "C:/Users/bjtra/Downloads/brush-app-x86_64-pc-windows-msvc/brush_app.exe"
+        }
+    }
+}
