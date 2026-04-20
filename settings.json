@@ -3,11 +3,11 @@
     "settings": {
         "brush": {
             "enabled": true,
-            "path": "C:/Users/bjtra/Downloads/brush-app-x86_64-pc-windows-msvc/brush_app.exe"
+            "path": "C:/Program Files/brush/brush_app.exe"
         },
         "metashape": {
-            "enabled": false,
-            "path": "C:/Users/bjtra/Downloads/brush-app-x86_64-pc-windows-msvc/brush_app.exe"
+            "enabled": true,
+            "path": "C:/Program Files/Agisoft/Metashape Pro/metashape.exe"
         }
     }
 }
